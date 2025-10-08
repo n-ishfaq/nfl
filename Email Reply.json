@@ -1,0 +1,613 @@
+{
+  "name": "Email Reply",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        1248
+      ],
+      "id": "7434cf2b-34e5-41f4-bd09-0bb6be13679b",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "OM6WcByxgJTMNHEq",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -752,
+        1424
+      ],
+      "id": "0a2a65ea-a4c5-4bc3-80f3-7a5e3af86653",
+      "name": "Mark as Read",
+      "webhookId": "e02178e1-0ecc-4191-94cf-1346d5587ec1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GXv5pvTa2cqU5YgR",
+          "name": "google email personal noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -752,
+        432
+      ],
+      "id": "5f6abffc-7739-424b-88ff-df20c3400feb",
+      "name": "Mark as Read1",
+      "webhookId": "e02178e1-0ecc-4191-94cf-1346d5587ec1",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GXv5pvTa2cqU5YgR",
+          "name": "google email personal noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an intelligence bot at summarize gmail.",
+        "hasOutputParser": true,
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are an intelligence bot that processes Gmail messages.  \nYour task is to:  \n1. Summarize the email in short and concise words.  \n2. Generate a short, natural reply.  \n3. Return the result strictly in this JSON format:\n\n{\n  \"Reply\": \"<Reply here>\",\n  \"from\": {{ $('Text Classifier').item.json.From.split('<')[1] }},\n  \"Subject\": {{ $('Text Classifier').item.json.Subject }}\n}\n\nGuidelines:\n- Replies must be short, human-like, and context-aware.  \n- If the email is about booking or confirming a meeting, reply with: \"I'm in. When are you available?\" or a simple confirmation like \"Yes, we have it today.\"  \n- If the email asks for clarification (e.g., \"explain this term\"), reply with: \"Sure, I can explain that. Can you remind me of the context?\"  \n- If the email is casual/personal (e.g., \"coffee invite\"), reply warmly with: \"Yes, I'd love to. When works best for you?\"  \n- Never include explanations, signatures, or extra text outside of JSON.  \n- Keep answers laconic and spartan.\n"
+            },
+            {
+              "message": "=Gmail Message: {{ $json.snippet }}"
+            }
+          ]
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.6,
+      "position": [
+        -816,
+        1024
+      ],
+      "id": "814ecd88-b5b5-4da9-89b8-c703d1de7d8d",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"state\": \"California\",\n\t\"cities\": [\"Los Angeles\", \"San Francisco\", \"San Diego\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -672,
+        1248
+      ],
+      "id": "60400e64-5427-43c7-8e08-6606f3b57b8a",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an intelligence bot at summarize gmail.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an intelligent assistant that processes Gmail messages.  \nYour job is to:  \n1. Summarize the email in short and concise words.  \n2. Generate a simple and context-aware reply.  \n3. Return the result strictly in the following JSON format:\n\n{\n  \"Reply\": \"<Your reply here>\",\n  \"from\": {{ $json.From.split('<')[1] }},\n  \"Subject\": {{ $json.Subject }}\n}\n\nGuidelines:\n- Keep replies short, natural, and human-like.  \n- If the email is about booking a meeting, respond with: \"I'm in. When are you available to meet?\"  \n- If the email is a confirmation, reply politely with a short acknowledgment like \"Sounds good, thank you.\"  \n- If the email requests information, reply with a concise promise to provide it (e.g., \"Got it, I’ll send that over shortly.\").  \n- Do not add explanations, signatures, or extra text—only the reply.  \n- Always respect the JSON format exactly.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -816,
+        624
+      ],
+      "id": "cf701b91-211e-4cb2-87f6-43a8ea31b40f",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -928,
+        848
+      ],
+      "id": "0564fa2c-6e7f-4e97-a54c-692d7479986c",
+      "name": "Groq Chat Model3",
+      "credentials": {
+        "groqApi": {
+          "id": "OM6WcByxgJTMNHEq",
+          "name": "Groq account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n\t\"state\": \"California\",\n\t\"cities\": [\"Los Angeles\", \"San Francisco\", \"San Diego\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.2,
+      "position": [
+        -544,
+        848
+      ],
+      "id": "59490d92-b171-4d87-ac44-f4f7a716a7f3",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 15
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -800,
+        848
+      ],
+      "id": "b10a261b-063a-42a4-939a-1f096683d0af",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.output.from }}",
+        "subject": "={{ $json.output.Subject }}",
+        "message": "={{ $json.output.Reply }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        1136
+      ],
+      "id": "62a4ca9b-606c-4134-b168-9790f0ac4694",
+      "name": "Send Reply",
+      "webhookId": "4906a837-0d0e-49ea-aa40-b05dacde3a69",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GXv5pvTa2cqU5YgR",
+          "name": "google email personal noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "CATEGORY_SOCIAL"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1152,
+        1424
+      ],
+      "id": "2bf05ec5-3f67-4789-b858-5d4a44763a99",
+      "name": "Add label to message",
+      "webhookId": "b0b43ccb-3edf-4a95-a3ec-9413313ac87a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GXv5pvTa2cqU5YgR",
+          "name": "google email personal noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "CATEGORY_PERSONAL"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1152,
+        1136
+      ],
+      "id": "9731fb27-5723-4bd8-a719-85cf004075f7",
+      "name": "Add label to message1",
+      "webhookId": "b0b43ccb-3edf-4a95-a3ec-9413313ac87a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GXv5pvTa2cqU5YgR",
+          "name": "google email personal noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "messageId": "={{ $json.threadId }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1152,
+        736
+      ],
+      "id": "7fc6b474-ff03-4c96-b73b-6aeb380b60cd",
+      "name": "Get a message",
+      "webhookId": "b0b43ccb-3edf-4a95-a3ec-9413313ac87a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GXv5pvTa2cqU5YgR",
+          "name": "google email personal noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": [
+          "CATEGORY_PROMOTIONS"
+        ]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1152,
+        432
+      ],
+      "id": "2970396e-3c93-427a-a1ad-c433a6cdf44d",
+      "name": "Add label to message2",
+      "webhookId": "b0b43ccb-3edf-4a95-a3ec-9413313ac87a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GXv5pvTa2cqU5YgR",
+          "name": "google email personal noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1SWAeszEa0GGZR0rXQVK5vGm-KWGwQG-fiGKaKyD-vXU/edit?tab=t.0"
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        -672,
+        848
+      ],
+      "id": "cf6aa138-a5be-4b32-ad46-34f67c5e0ed1",
+      "name": "Get a document in Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "wuBWmqrjrRD48TXn",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.output.from }}",
+        "subject": "={{ $json.output.Subject }}",
+        "message": "={{ $json.output.Reply }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        736
+      ],
+      "id": "409c98b6-40da-43a7-adc3-90605c3cf5d0",
+      "name": "Send Reply1",
+      "webhookId": "4906a837-0d0e-49ea-aa40-b05dacde3a69",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "GXv5pvTa2cqU5YgR",
+          "name": "google email personal noman"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=Subject: {{ $json.Subject }}\nEmail Body: {{ $json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Promotions",
+              "description": "This email looks like to sell me anything."
+            },
+            {
+              "category": "Social",
+              "description": "This email looks like social media platform like facebook, instagram, and so on."
+            },
+            {
+              "category": "Personal",
+              "description": "Any email look like family, friends, and other."
+            },
+            {
+              "category": "Sales",
+              "description": "Any thing that is related to sale."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1,
+      "position": [
+        -1504,
+        928
+      ],
+      "id": "d4bb6958-ba5c-42e3-8db8-e04a124a3d0d",
+      "name": "Text Classifier1"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1728,
+        928
+      ],
+      "id": "870b09e9-e3df-44bc-a739-0827535d7e03",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "mBovxgBU8pgtuF6m",
+          "name": "Robo Growth Website"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        1216
+      ],
+      "id": "1a1261d4-1ab4-46f1-9d29-60eb9a74b160",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "OM6WcByxgJTMNHEq",
+          "name": "Groq account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Send Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message": {
+      "main": [
+        [
+          {
+            "node": "Mark as Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message1": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a message": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add label to message2": {
+      "main": [
+        [
+          {
+            "node": "Mark as Read1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a document in Google Docs": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Reply1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier1": {
+      "main": [
+        [
+          {
+            "node": "Add label to message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add label to message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "25b90c90-0135-45a5-9f22-15abf9f3ce33",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d781785cc92b387d9586bcb00b682ac0a21587ecd0f470f6ad3c828f1905f9f0"
+  },
+  "id": "sC4BnRGzrCwe8zXs",
+  "tags": []
+}
